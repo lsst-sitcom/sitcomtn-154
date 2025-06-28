@@ -18,6 +18,10 @@
 \newcommand{\codetodo}[1]{{\color{gray} [code TODO: {#1}]}\xspace}
 \newcommand{\halp}[2]{\textbf{\color{blue} INSTRUCTIONS FOR CONTRIBUTORS ({#1}): {#2}}\xspace}
 
+\newcommand{\photoz}{photo-$z$\xspace}
+\newcommand{\photozs}{photo-$z$s\xspace}
+
+
 %If you want glossaries
 %\input{aglossary.tex}
 %\makeglossaries
@@ -53,8 +57,22 @@
 % \setDocCurator{The Curator of this Document}
 
 \setDocAbstract{%
-This technote holds reports based on the first analyses of the Data Preview 1 (DP1) ComCam data by the Science Unit for photometric redshifts.  The Science Unit developed training and test datasets by matching DP1 data to high-quality reference redshifts obtained with spectroscopy, Grism data, and multi-band photometry.  
-The Science Unit then used the RAIL software package to make photometric redshifts estimates using eight different algorithms, developed simple scientific performance metrics, used those metrics to explore how the performance of the algorithms varied with configuration changes, derived more optimized configurations of the algorithms and tested the performance of those configurations.   
+This technote holds reports based on the first analyses of the Data
+Preview 1 (DP1) ComCam data by the Science Unit for photometric
+redshifts.  Although photometric redshifts are not a official DP1 data
+product, the``Photo-z Science Unit'' generated \photoz
+estimates for every galaxy in DP1 using the available multi-band
+imaging on a best-effort basis.   This work included developing
+training and test datasets by matching DP1 data to high-quality
+reference redshifts obtained with spectroscopy, Grism data, and multi-band photometry.  
+The Science Unit used the RAIL software package to make
+photometric redshifts estimates using eight different algorithms,
+developed simple scientific performance metrics, used those metrics to
+explore how the performance of the algorithms varied with
+configuration changes, derived more optimized configurations of the
+algorithms and tested the performance of those configurations.
+This work, the resulting data products and expected data distribution
+mechanism are all described there. 
 }
 
 % Change history defined here.
@@ -100,3 +118,7 @@ The Science Unit then used the RAIL software package to make photometric redshif
 
 
 \end{document}
+
+%  LocalWords:  maketitle changelog mkshorttitle renewcommand refname
+%  LocalWords:  local,lsst,lsst-dm,refs_ads,refs,books lsst-texmf
+%  LocalWords:  printglossaries
