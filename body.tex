@@ -1,7 +1,7 @@
 \section{Introduction}
 \label{sec:intro:0}
 
-The Vera C. Rubin Observatory’s Data Preview 1 (DP1) marks an important milestone in preparing for the forthcoming Legacy Survey of Space and Time (LSST), offering a valuable opportunity to test and validate scientific tools and workflows on precursor imaging data~\citep{RTN:095}. Among the core scientific objectives of LSST is the estimation of photometric redshifts (\photozs) for billions of galaxies, enabling extragalactic astrophysics and cosmological analyses that rely on redshift estimates and distributions.  Accordingly the Rubin project developed a roadmap to providing high-quality \photozs for the scientific community~\citep{DMTN:049}.
+The Vera C. Rubin Observatory’s Data Preview 1 (DP1) marks an important milestone in preparing for the forthcoming Legacy Survey of Space and Time (LSST), offering a valuable opportunity to test and validate scientific tools and workflows on precursor imaging data~\citep{RTN:095}. Among the core scientific objectives of LSST is the estimation of photometric redshifts (\photozs) for billions of galaxies, enabling extragalactic astrophysics and cosmological analyses that rely on redshift estimates and distributions.  Accordingly, the Rubin project developed a roadmap to providing high-quality \photozs for the scientific community~\citep{DMTN:049}.
 
 Although \photoz are not a DP1 deliverable, the ``Photo-z Science Unit'' was asked to generate \photoz estimates for every galaxy in DP1 using the available multi-band imaging on a best-effort basis, laying the groundwork for future large-scale applications.  This effort required integrating realistic data processing with scalable machine learning techniques capable of delivering precise redshift predictions across varied galaxy populations.
 
@@ -19,6 +19,8 @@ We expect feedback from science users as they explore the data and discover issu
 
 The Rubin Observatory’s Data Preview 1 (DP1) dataset is the first public release of Rubin observatory imaging data processed through the LSST Science Pipelines, serving as a critical testbed for scientific and technical validation ahead of full LSST operations.  DP1 is based on observations from the LSST commissioning camera (LSSTComCam) and includes multi-band optical imaging in u, g, r, i, z and y filters over several square degrees of sky.  The dataset consists of processed images, source catalogs, and associated metadata, all formatted using the Rubin Data Butler system in the same way as full LSST data products.  Although smaller in scale than future LSST datasets, DP1 offers realistic photometric measurements, object detection, and data structures, making it an invaluable resource for developing and testing algorithms for tasks such as \photoz estimation, object classification, and data quality assessment.
 
+Critially, the fields selected for ComCam observation included the Extended Chandra Deep Field South (ECDFS), for which many high-quailty redshifts exist from other surveys. 
+
 
 \subsubsection{Preparation of photometric object catalogs}
 \label{sec:data:dp1:preparation}
@@ -28,23 +30,23 @@ The Rubin Data Management (Rubin DM) pipeline measures multiple types of object 
 Preparing object catalog data for \photoz algorithm training and estimation included five steps:
 
 \begin{enumerate}
-\item{Applying quality cuts to the object catalog.   We developed a  selection for the training and test datasets (\strong{match\_gold}), and two additional selections for full DP1 catalogs: one applicable for fields with observations in only four bands (\strong{gold\_4\_band}), the other for fields with observations in all six bands (\strong{gold}).  These selections are described below.}
+\item{Applying quality cuts to the object catalog.   We developed selections for the training and test datasets (\selection{match\_xxx}), and two additional selections for full DP1 catalogs: one applicable for fields with observations in only four bands (\selection{gold\_4\_band}), the other for fields with observations in all six bands (\selection{gold}).  These selections are described below.}
 \item{Converting fluxes in nJy to AB magnitudes ($m_\text{AB} = -2.5 \log_{10}(f_\nu / \text{nJy}) + 31.4$)}
 \item{De-reddening to account for Galactic dust.  We use the SFD dust maps\citep{SFD}.}
 \item{Cross-matching objects with reference catalogs that include redshift information as described in Sec.~\ref{sec:data:reference}.}
-\item{Shuffling and splitting the resulting catalog into ``training'' and ``test'' data sets.}
+\item{Shuffling and splitting the resulting catalog into \dataset{training} and \dataset{test} data sets.}
 \end{enumerate}
 
 The data selection criteria that we used were:
 \begin{itemize}
-\item{\strong{match\_prelim}: first version of matching to high-quality redshift catalogs in the ECDFS field,  see Sec.~\ref{sec:data:reference}.}
-\item{\strong{match\_ecdfs}: updated matching to high-quality redshift datalogs in the ECDFS field, see Sec.~\ref{sec:data:reference}.}
-\item{\strong{match\_desi}: matching to DESI redshift catalogs in the ``Rubin SV 38 7'' field, see Sec.~\ref{sec:data:desi}.}
-\item{\strong{gold}: \code{Detection in 'ugrizy'  \&\& i\_psfFlux / i\_psfFluxErr > 5 \&\& ( g\_extendedness > 0.5 || r\_extendedness > 0.5)}.}
-\item{\strong{gold\_4\_band}: \code{Detection in 'griz' \&\& i\_psfFlux / i\_psfFluxErr > 5 \&\& ( g\_extendedness > 0.5 || r\_extendedness > 0.5)}.}
+\item{\selection{match\_prelim}: first version of matching to high-quality redshift catalogs in the ECDFS field,  see Sec.~\ref{sec:data:reference}.}
+\item{\selection{match\_ecdfs}: updated matching to high-quality redshift datalogs in the ECDFS field, see Sec.~\ref{sec:data:reference}.}
+\item{\selection{match\_desi}: matching to DESI redshift catalogs in the \field{Rubin SV 38 7} field, see Sec.~\ref{sec:data:desi}.}
+\item{\selection{gold}: \code{Detection in 'ugrizy'  \&\& i\_psfFlux / i\_psfFluxErr > 5 \&\& ( g\_extendedness > 0.5 || r\_extendedness > 0.5)}.}
+\item{\selection{gold\_4\_band}: \code{Detection in 'griz' \&\& i\_psfFlux / i\_psfFluxErr > 5 \&\& ( g\_extendedness > 0.5 || r\_extendedness > 0.5)}.}
 \end{itemize}
 
-To create the ``training'' and ``test'' data sets, we followed steps 1--5, while for the larger unlabeled data sets we followed steps 1--3.  Specifically, for DP1, the ``ECDFS'', ``EDFS'' and``Rubin SV 95 -25'' fields have observation in 6 bands, and we applied the \strong{gold} target selection.   In ``Rubin SV 38 7'', DP1 only has observation in 4 bands (``griz''), therefore we applied the \strong{gold\_4\_band} target selection to that field. 
+To create the \dataset{training} and \dataset{test} data sets, we followed steps 1--5, while for the larger unlabeled data sets we followed steps 1--3.  Specifically, for DP1, the \field{ECDFS}, \dataset{EDFS} and \dataset{Rubin SV 95 -25} fields have observation in 6 bands, and we applied the \selection{gold} target selection.   In \field{Rubin SV 38 7}, DP1 only has observation in 4 bands (``griz''), therefore we applied the \selection{gold\_4\_band} target selection to that field. 
 
 
 All of these datasets are summarized in Tab.~\ref{tab:dataset}.
@@ -57,13 +59,13 @@ All of these datasets are summarized in Tab.~\ref{tab:dataset}.
  \hline
  \hline
   DP1 & None & 2,299,757 \\
- ECDFS+EDFS+SV\_95 & \strong{gold} & 375,610\\
- SV\_38 & \strong{gold\_4\_band} & 169,034\\
- training\_v1 & \strong{match\_prelim}  & 7,000\\
- test\_v1 & \strong{match\_prelim}  & 2,437 \\
- training\_v2 & \strong{match\_ecdfs}  & 4,803\\
- test\_v2 & \strong{match\_ecdfs}  & 1,201 \\
- test\_DESI & \strong{match\_desi}  & 2,728 \\
+ ECDFS+EDFS+SV\_95 & \selection{gold} & 375,610\\
+ SV\_38 & \selection{gold\_4\_band} & 169,034\\
+ training\_v1 & \selection{match\_prelim}  & 7,000\\
+ test\_v1 & \selection{match\_prelim}  & 2,437 \\
+ training\_v2 & \selection{match\_ecdfs}  & 4,803\\
+ test\_v2 & \selection{match\_ecdfs}  & 1,201 \\
+ test\_DESI & \selection{match\_desi}  & 2,728 \\
  \hline
 \end{tabular}
 \caption{ Summary of the datasets used in this work.  Note that to train models on four-band photometry, we used the same training and test sets as for six-band photometry, but configured the algorithms only to use the 'griz' bands.}
@@ -76,36 +78,36 @@ All of these datasets are summarized in Tab.~\ref{tab:dataset}.
 \label{sec:data:dp1:properties}
 
 We have developed tools to generate diagnostic plots of both the input object catalogs and the \photoz estimates as part of our data analysis.
-Fig.~\ref{fig:dp_mags} shows histograms of the AB magnitudes in 1.0 arc-second apertures of objects in the ``test\_v1'' dataset, which includes an explicit magnitude cut, $m_{i} < 26.0$.
-Fig.~\ref{fig:dp_mag_i_v_redshift} shows the correlation between magnitude and redshift for all objects in the reserved ``test\_v1''' data set.  
+Fig.~\ref{fig:dp_mags} shows histograms of the AB magnitudes in 1.0 arc-second apertures of objects in the \dataset{test\_v1} dataset, which includes an explicit magnitude cut, $m_{i} < 26.0$.
+Fig.~\ref{fig:dp_mag_i_v_redshift} shows the correlation between magnitude and redshift for all objects in the \dataset{test\_v1} data set.  
 Fig.~\ref{fig:dp_color_v_redshift} shows the ``adjacent band colors'', i.e., $u-g$, $g-r$, $r-i$, $i-z$, $z-y$ versus redshift for the same, with a series of SED templates (as used by template-fitting algorithms, see Sec.~\ref{sec:method:template}) overlaid.  
 Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color correlations for the same.  In all cases, the 1.0 arc-second aperture magnitudes are used for plotting.
 
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{figures/mags.pdf}
-    \caption{1.0 arc-second Gaussian Aperture (Gaap) magnitudes (in AB system) of objects in each of the six Rubin filter bands in the ``test\_v1''' dataset.  These aperture magnitudes were used as the inputs for the \photoz algorithms.}
+    \caption{1.0 arc-second Gaussian Aperture (Gaap) magnitudes (in AB system) of objects in each of the six Rubin filter bands in the \dataset{test\_v1} dataset.  These aperture magnitudes were used as the inputs for the \photoz algorithms.}
     \label{fig:dp_mags}
 \end{figure*}
 
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{figures/mag_i_v_redshift.pdf}
-    \caption{1.0 arc-second Gaussian Aperture (Gaap) i-band magnitude versus redshift for all objects in the ``test\_v1''' dataset.}
+    \caption{1.0 arc-second Gaussian Aperture (Gaap) i-band magnitude versus redshift for all objects in the \dataset{test\_v1} dataset.}
     \label{fig:dp_mag_i_v_redshift}
 \end{figure*}
 
 \begin{figure*}
     \centering
     \includegraphics[height=7in]{figures/color_v_redshift.pdf}
-    \caption{``Adjacent band colors'', i.e., $u-g$, $g-r$, $r-i$, $i-z$, $z-y$, in 1.0 arc-second apertures versus redshift for all objects in the ``test\_v1''' dataset.  Colored lines represent the expected colors for the eight ``CWWSB'' SEDs described in Sec.~\ref{sec:method:template}, and should very roughly show the predicted range of color evolution expected for our galaxy sample.}
+    \caption{``Adjacent band colors'', i.e., $u-g$, $g-r$, $r-i$, $i-z$, $z-y$, in 1.0 arc-second apertures versus redshift for all objects in the \dataset{test\_v1} dataset.  Colored lines represent the expected colors for the eight ``CWWSB'' SEDs described in Sec.~\ref{sec:method:template}, and should very roughly show the predicted range of color evolution expected for our galaxy sample.}
     \label{fig:dp_color_v_redshift}
 \end{figure*}
 
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{figures/color_v_color.pdf}
-    \caption{Color-color correlations for all objects in the ``test\_v1'' dataset.  Colored lines represent the expected colors for the eight ``CWWSB'' SEDs described in Sec.~\ref{sec:method:template}, and should very roughly show the predicted color evolution expected for our galaxy sample.}
+    \caption{Color-color correlations for all objects in the `\dataset{test\_v1} dataset.  Colored lines represent the expected colors for the eight ``CWWSB'' SEDs described in Sec.~\ref{sec:method:template}, and should very roughly show the predicted color evolution expected for our galaxy sample.}
     \label{fig:dp_color_v_color}
 \end{figure*}
 
@@ -114,7 +116,7 @@ Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color correlations for 
 \subsection{Redshift reference sample}
 \label{sec:data:reference}
 
-The \photoz estimation algorithms in RAIL require highly accurate and precise redshift estimates cross-matched to the DP1 photometric catalog to provide labeled ``training'' data sets.  We created such datasets using data drawn from publicly available catalogs in the Extended Chandra Deep Field South (ECDFS), comprising galaxies with known spectroscopic redshifts, grism redshifts, and high-quality \photoz's from deep multi-band imaging.  These training sets enable machine learning models within RAIL to learn the mapping between galaxy colors and redshifts, enabling \photoz estimation for every galaxy detected in DP1.
+The \photoz estimation algorithms in RAIL require highly accurate and precise redshift estimates cross-matched to the DP1 photometric catalog to provide labeled \dataset{training} data sets.  We created such datasets using data drawn from publicly available catalogs in the ECDFS, comprising galaxies with known spectroscopic redshifts, grism redshifts, and high-quality \photoz's from deep multi-band imaging.  These training sets enable machine learning models within RAIL to learn the mapping between galaxy colors and redshifts, enabling \photoz estimation for every galaxy detected in DP1.
 
 \begin{figure*}[b]
     \centering
@@ -226,7 +228,7 @@ We then did a random 80\%/20\% train/test split on this catalog, resulting in a 
 \subsubsection{DESI Data Release 1 spectroscopic redshift dataset}
 \label{sec:data:desi}
 
-We also use data from the DESI Data Release \citep{desi-dr1} to act as an independent validation data set as it overlaps the ``Rubin SV 38-7'' (\texttt{SV\_38}) field.
+We also use data from the DESI Data Release \citep{desi-dr1} to act as an independent validation data set as it overlaps the \field{Rubin SV 38-7} (\field{SV\_38}) field.
 The observations of this field are centered on the Abell 360 galaxy cluster which is located at $z=0.22$~\citep{A360z}.
 We cross-matched the DESI Bright Galaxy Sample (BGS) \citep{BGS}, Emission Line Galaxy (ELG) \citep{ELG}, and Luminous Red Galaxy (LRG) \citep{LRG} samples against the DP1 catalog using a radius of 0.5'' producing 2728  matches with 398 from the BGS sample, 1421 from ELG, and 909 from LRG.
 The area of overlap and the three subsamples are shown in Fig.~\ref{fig:desi-overlap}.
@@ -236,19 +238,19 @@ This spans a redshift range of 0 to 1.6 and \textit{i}-mag of 14 to 23.9 as show
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{figures/desi_sample_overlap.png}
-    \caption{Overlap between the \texttt{SV\_38} sample and DESI subsamples. In all plots, the small blue dots are DP1 objects from ComCam and we overlay, from left to right, the BGS, LRG, and ELG subsamples with points color-coded by redshift. Each sample probes a different redshift range and is shown with the color bar to the right of each panel.}
+    \caption{Overlap between the \field{SV\_38} sample and DESI subsamples. In all plots, the small blue dots are DP1 objects from ComCam and we overlay, from left to right, the BGS, LRG, and ELG subsamples with points color-coded by redshift. Each sample probes a different redshift range and is shown with the color bar to the right of each panel.}
     \label{fig:desi-overlap}
 \end{figure}
 
 \begin{figure}]ht]
     \centering
     \includegraphics[width=.8\linewidth]{figures/desi_sample_histogram.png}
-    \caption{Validation set on \texttt{SV\_38} from DESI BRG, ELG, and LRG samples. Left plot: the redshift distribution of the matched subsample with BGS in blue, ELG in orange, LRG in green, and the total matched distribution in black. Right plot: \textit{i}-band magnitude as measured by ComCam versus spectroscopic redshift for all DESI matches with subsamples shown using the same color scheme as left plot.}
+    \caption{Validation set on \field{SV\_38} from DESI BRG, ELG, and LRG samples. Left plot: the redshift distribution of the matched subsample with BGS in blue, ELG in orange, LRG in green, and the total matched distribution in black. Right plot: \textit{i}-band magnitude as measured by ComCam versus spectroscopic redshift for all DESI matches with subsamples shown using the same color scheme as left plot.}
     \label{fig:desi-subsample-hist}
 \end{figure}
 
 If an object was included in multiple samples, when matching we restrict to the one with the largest weight as calculated by DESI DR1.
-The \texttt{SV\_38} field was observed in \textit{g} (44 visits), \textit{r} (55 visits), \textit{i} (57 visits) and \textit{z} (27 visits) bands restricting our validation to the 4 band models.
+The \field{SV\_38} field was observed in \textit{g} (44 visits), \textit{r} (55 visits), \textit{i} (57 visits) and \textit{z} (27 visits) bands restricting our validation to the 4 band models.
 Furthermore, the incomplete overlap with the BGS sample limits our ability to validate on redshifts below $z=0.5$. 
 
 
@@ -354,7 +356,7 @@ We evaluated all the algorithms listed in Tab.~\ref{tab:alg} for both scientific
 \subsection{Redshift estimator performance}
 \label{sec:performance:pz}
 
-We primarily evaluated the performance using the ``test\_v1'' catalog which consist of 2,437 galaxies randomly drawn from the cross-match between the DP1 object catalog in ECDFS with the reference redshifts described in Sec.~\ref{sec:data:reference}.  Additionally, we cross matched the DP1 object catalog in the \texttt{Rubin\_SV\_38\_7} field with the DESI DR1 BGS, LRG and ELG galaxies as a secondary validation set (``test\_DESI''). 
+We primarily evaluated the performance using the ``test\_v1'' catalog which consist of 2,437 galaxies randomly drawn from the cross-match between the DP1 object catalog in ECDFS with the reference redshifts described in Sec.~\ref{sec:data:reference}.  Additionally, we cross matched the DP1 object catalog in the \field{SV\_38} field with the DESI DR1 BGS, LRG and ELG galaxies as a secondary validation set (``test\_DESI''). 
 
 Specifically, we ran the \href{https://github.com/LSSTDESC/rail_pipelines/blob/main/src/rail/pipelines/estimation/pz_all.py}{PzPipeline}
 (Inform $\rightarrow$ Estimate $\rightarrow$ Evaluate) to train models for per-object $p(z)$ estimation on the training data set, use those models to obtain \photoz estimates for the test data set, and then evaluate the performance of the photometric point-estimate of the redshift against the spectroscopic estimates.
@@ -435,9 +437,9 @@ Applying a simple cut on the RMS of the $p(z)$ distribution can dramatically red
 \end{figure*}
 
 
-\subsubsection{Validation in the \texttt{SV\_38} field}
+\subsubsection{Validation in the \field{SV\_38} field}
 
-We cross-matched our \photoz estimates with the DESI DR1 LSS galaxies (BGS, LRG, and ELG) in the \texttt{SV\_38} field. This cross-matched catalog can serve as additional validation for our \photoz results.  In Fig.~\ref{fig:sv_validation}, we show the median photometric redshift estimates versus the DESI spectroscopic redshifts all eight tested \photoz algorithms.  Each panel corresponds to a different algorithm, allowing us to visually assess the bias, scatter, and potential outlier behavior across a wide redshift range. Overall, the agreement with DESI DR1 spectroscopic redshifts provides a robust sanity check on the performance of our methods in the early LSST data regime.
+We cross-matched our \photoz estimates with the DESI DR1 LSS galaxies (BGS, LRG, and ELG) in the \field{SV\_38} field. This cross-matched catalog can serve as additional validation for our \photoz results.  In Fig.~\ref{fig:sv_validation}, we show the median photometric redshift estimates versus the DESI spectroscopic redshifts all eight tested \photoz algorithms.  Each panel corresponds to a different algorithm, allowing us to visually assess the bias, scatter, and potential outlier behavior across a wide redshift range. Overall, the agreement with DESI DR1 spectroscopic redshifts provides a robust sanity check on the performance of our methods in the early LSST data regime.
 
 \begin{figure*}
 \centering
@@ -449,7 +451,7 @@ We cross-matched our \photoz estimates with the DESI DR1 LSS galaxies (BGS, LRG,
 \includegraphics[width=0.32\linewidth]{figures/gpz_mode_desi.png}
 \includegraphics[width=0.32\linewidth]{figures/bpz_mode_desi.png}
 \includegraphics[width=0.32\linewidth]{figures/lephare_mode_desi.png}
-\caption{Mode photometric redshift estimates versus DESI DR1 spectroscopic redshifts for galaxies in the \texttt{SV\_38} cross-matched sample. Each panel shows results from a different \photoz algorithm: FlexZBoost, kNN, CMNN, DNF, TPZ, GPz, BPZ, and LePhare (from left to right, top to bottom). These comparisons provide an external validation of \photoz performance using Large-Scale Structure spectroscopic redshifts samples DESI.}
+\caption{Mode photometric redshift estimates versus DESI DR1 spectroscopic redshifts for galaxies in the \field{SV\_38} cross-matched sample. Each panel shows results from a different \photoz algorithm: FlexZBoost, kNN, CMNN, DNF, TPZ, GPz, BPZ, and LePhare (from left to right, top to bottom). These comparisons provide an external validation of \photoz performance using Large-Scale Structure spectroscopic redshifts samples DESI.}
 \label{fig:sv_validation}
 \end{figure*}
 
@@ -520,7 +522,7 @@ The \photoz estimates described in this note were done on a best-effort basis by
 \section{Summary and Conclusion}
 \label{sec:summary:0}
 
-This note describes an initial calculation of photometric redshifts on the Rubin Data Preview 1 dataset using the tools and workflows developed specifically for this purpose by the Photo-z Science Unit.  These early results are very promising, we show that we can successfully match Rubin data with spectroscopic samples in the ECDFS field with deep six-band Rubin coverage to create a reference sample and run our software pipelines to generate a catalog of individual object redshifts consisting of both point 1D redshift PDFs and point estimate redshifts.  We show results for eight \photoz algorithms using a reserve set of redshifts, and see that \photoz performance is in-line with expectations both in terms of our redshift predictions and for compute times.  We also test our estimates against an independent set of redshifts from the \texttt{SV\_38} field with shallower coverage and imaging in only four of the six Rubin bands.  We describe available data products and anticipated methods to access them.  Overall, this is a very successful initial test of \photoz pipelines.
+This note describes an initial calculation of photometric redshifts on the Rubin Data Preview 1 dataset using the tools and workflows developed specifically for this purpose by the Photo-z Science Unit.  These early results are very promising, we show that we can successfully match Rubin data with spectroscopic samples in the ECDFS field with deep six-band Rubin coverage to create a reference sample and run our software pipelines to generate a catalog of individual object redshifts consisting of both point 1D redshift PDFs and point estimate redshifts.  We show results for eight \photoz algorithms using a reserve set of redshifts, and see that \photoz performance is in-line with expectations both in terms of our redshift predictions and for compute times.  We also test our estimates against an independent set of redshifts from the \field{SV\_38} field with shallower coverage and imaging in only four of the six Rubin bands.  We describe available data products and anticipated methods to access them.  Overall, this is a very successful initial test of \photoz pipelines.
 
 However, work will continue on several fronts to further optimize the performance of our redshift predictions.  As mentioned earlier in the note, the definition of the true redshift reference sample used to train our algorithms has a large impact on results, being the ``truth'' used to define the flux/color-to-redshift mapping that is inherent to \photoz estimation.  We will work to refine our reference sample definition, which objects to include/exclude based on quality flags, explore the tradeoffs of including grism and many-band \photoz estimates with larger redshift uncertainties in our training sample, and other such effects.  As more and more Rubin data is taken, areal coverage is increasing, including coverage of additional deep calibration fields with existing spec-z datasets.  This will naturally improve \photoz performance.  Expansion of reference redshifts will also enable the development of improved object flagging for identifying which redshifts are trustworthy and those which are likely to be incorrect.
 
