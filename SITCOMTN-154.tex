@@ -20,19 +20,22 @@
 
 \newcommand{\photoz}{photo-$z$\xspace}
 \newcommand{\photozs}{photo-$z$s\xspace}
+\newcommand{\field}[1]{\textbf{#1}}
+\newcommand{\selection}[1]{\textit{#1}}
+\newcommand{\dataset}[1]{``#1''}
 
 
 %If you want glossaries
 %\input{aglossary.tex}
 %\makeglossaries
 
-\title{Initial studies of photometric redshifts for ComCam data}
+\title{Initial studies of photometric redshifts with ComCam from DP1}
 
 % This can write metadata into the PDF.
 % Update keywords and author information as necessary.
 \hypersetup{
-    pdftitle={Photometric redshifts for ComCam data},
-    pdfauthor={Melissa Graham},
+    pdftitle={Initial studies of photometric redshifts with ComCam from DP1},
+    pdfauthor={Melissa Graham},    
     pdfkeywords={}
 }
 
@@ -45,7 +48,7 @@
   Tianqing Zhang, 
   Sam Schmidt,
   Prakruth Adari, 
-  Melissa Graham,  
+  Melissa Graham
 }
 
 \setDocRef{SITCOMTN-154}
@@ -60,13 +63,13 @@
 This technote holds reports based on the first analyses of the Data
 Preview 1 (DP1) ComCam data by the Science Unit for photometric
 redshifts.  Although photometric redshifts are not a official DP1 data
-product, the``Photo-z Science Unit'' generated \photoz
+product, the ``Photo-z Science Unit'' generated \photoz
 estimates for every galaxy in DP1 using the available multi-band
 imaging on a best-effort basis.   This work included developing
 training and test datasets by matching DP1 data to high-quality
 reference redshifts obtained with spectroscopy, Grism data, and multi-band photometry.  
 The Science Unit used the RAIL software package to make
-photometric redshifts estimates using eight different algorithms,
+photometric redshift estimates using eight different algorithms,
 developed simple scientific performance metrics, used those metrics to
 explore how the performance of the algorithms varied with
 configuration changes, derived more optimized configurations of the
