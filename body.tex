@@ -156,7 +156,7 @@ We encourage readers to investigate the details of each component survey that co
 For example, if studying high-redshift galaxies, you might choose to include the multiband \photoz's, which increase the number of redshifts at $z > 2$ by a factor of~3 (Fig.~\ref{fig:redshift-by-type}).
 
 We applied conservative cuts for our fiducial analyses, specifically \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).
-We then did a random 80\%/20\% train/test split on this catalog, resulting in a training set of 4803 redshifts and a test set of 1201 redshifts.
+We then performed a random 80\%/20\% train/test split on this catalog, resulting in a training set of 4803 redshifts and a test set of 1201 redshifts.
 
 \begin{table}[!p]
     \centering
@@ -221,7 +221,14 @@ We then did a random 80\%/20\% train/test split on this catalog, resulting in a 
     \label{fig:redshift-by-type}
 \end{figure}
 
-The \selection{match\_prelim} selection used in the \dataset{train\_v1} and \dataset{test\_v1} datasets did not use the confidence cut, and only required SNR $>= 5$ in the $i$ band (using \code{psf} fluxes).   We randomly selection 7,000 objects for the \dataset{train\_v1} and used the remaining 2,438 for the \dataset{test\_v1}  dataset.    Although we used these datasets extensively in V1 of this technote, we intend to update the note to use the \dataset{train\_v2} and \dataset{test\_v2} as soon as possible, ideally in the first week of July, 2025.
+The \selection{match\_prelim} selection used in the \dataset{train\_v1} and \dataset{test\_v1} 
+included all spectroscopic and grism galaxies in the ``match\_ecfds'' catalog, without applying 
+any confidence cut, and only required SNR $>= 5$ in the $i$ band (using \code{psf} fluxes).   
+This selection also dropped all galaxies with NaN magnitude in any of the six bands.
+We randomly selected 7,000 objects for the \dataset{train\_v1} and assigned the remaining 2,438 to the 
+\dataset{test\_v1}  dataset. Although we used these datasets extensively in V1 of this technote, 
+we intend to update the note to use the \dataset{train\_v2} and \dataset{test\_v2} as soon as possible, 
+ideally in the first week of July, 2025.
 
 
 \subsubsection{DESI Data Release 1 spectroscopic redshift dataset}
