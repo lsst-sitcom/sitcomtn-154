@@ -81,7 +81,7 @@ We have developed tools to generate diagnostic plots of both the input object ca
 Fig.~\ref{fig:dp_mags} shows histograms of the AB magnitudes in 1.0 arc-second apertures of objects in the \dataset{test\_v1} dataset, which includes an explicit magnitude cut, $m_{i} < 26.0$.
 Fig.~\ref{fig:dp_mag_i_v_redshift} shows the correlation between magnitude and redshift for all objects in the \dataset{test\_v1} data set.  
 Fig.~\ref{fig:dp_color_v_redshift} shows the ``adjacent band colors'', i.e., $u-g$, $g-r$, $r-i$, $i-z$, $z-y$ versus redshift for the same, with a series of SED templates (as used by template-fitting algorithms, see Sec.~\ref{sec:method:template}) overlaid.  
-Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color correlations for the same.  In all cases, the 1.0 arc-second aperture magnitudes are used for plotting.
+Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color plots for the same.  In all cases, the 1.0 arc-second aperture magnitudes are used for plotting.
 
 \begin{figure*}
     \centering
@@ -107,7 +107,7 @@ Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color correlations for 
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{figures/color_v_color.pdf}
-    \caption{Color-color correlations for all objects in the `\dataset{test\_v1} dataset.  Colored lines represent the expected colors for the eight ``CWWSB'' SEDs described in Sec.~\ref{sec:method:template}, and should very roughly show the predicted color evolution expected for our galaxy sample.}
+    \caption{Color-color plots for all objects in the `\dataset{test\_v1} dataset.  Colored lines represent the expected colors for the eight ``CWWSB'' SEDs described in Sec.~\ref{sec:method:template}, and should very roughly show the predicted color evolution expected for our galaxy sample.}
     \label{fig:dp_color_v_color}
 \end{figure*}
 
@@ -152,7 +152,7 @@ For the few that don't we assigned the confidence 0.95.
 For the grism and multiband \photoz surveys, we set the confidence equal to $1 - f_\text{out}$, where $f_\text{out}$ is the reported outlier rate of these catalogs.
 To facilitate custom quality cuts, the catalog contains flags indicating whether each redshift originates from spectroscopy (\code{type == ''s''}), grism (\code{''g''}), or multiband \photoz (\code{''p''}), as well as confidence values.
 Note redshifts from grism and \photoz surveys, however, have larger scatter and bias than spectroscopic surveys (and possible incorrect redshifts if the redshift is based off of a single emission line), but these metrics are not captured by the confidence parameter.
-We encourage readers to investigate the details of each component survey that comprise our reference catalog and apply their own quality cuts as suit their needs.
+We encourage readers who undertake their own customized \photoz production to investigate the details of each survey that comprise our reference quality and apply their own quality cuts as suit their needs.
 For example, if studying high-redshift galaxies, you might choose to include the multiband \photoz's, which increase the number of redshifts at $z > 2$ by a factor of~3 (Fig.~\ref{fig:redshift-by-type}).
 
 We applied conservative cuts for our fiducial analyses, specifically \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).
