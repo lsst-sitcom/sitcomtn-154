@@ -81,7 +81,7 @@ We have developed tools to generate diagnostic plots of both the input object ca
 Fig.~\ref{fig:dp_mags} shows histograms of the AB magnitudes in 1.0 arc-second apertures of objects in the \dataset{test\_v1} dataset, which includes an explicit magnitude cut, $m_{i} < 26.0$.
 Fig.~\ref{fig:dp_mag_i_v_redshift} shows the correlation between magnitude and redshift for all objects in the \dataset{test\_v1} data set.  
 Fig.~\ref{fig:dp_color_v_redshift} shows the ``adjacent band colors'', i.e., $u-g$, $g-r$, $r-i$, $i-z$, $z-y$ versus redshift for the same, with a series of SED templates (as used by template-fitting algorithms, see Sec.~\ref{sec:method:template}) overlaid.  
-Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color plots for the same.  In all cases, the 1.0 arc-second aperture magnitudes are used for plotting.
+Finally, Fig.~\ref{fig:dp_color_v_color} shows the color-color plots for the same adjacent colors.  In all cases, the 1.0 arc-second aperture magnitudes are used for plotting.
 
 \begin{figure*}
     \centering
@@ -152,7 +152,7 @@ For the few that don't we assigned the confidence 0.95.
 For the grism and multiband \photoz surveys, we set the confidence equal to $1 - f_\text{out}$, where $f_\text{out}$ is the reported outlier rate of these catalogs.
 To facilitate custom quality cuts, the catalog contains flags indicating whether each redshift originates from spectroscopy (\code{type == ''s''}), grism (\code{''g''}), or multiband \photoz (\code{''p''}), as well as confidence values.
 Note redshifts from grism and \photoz surveys, however, have larger scatter and bias than spectroscopic surveys (and possible incorrect redshifts if the redshift is based off of a single emission line), but these metrics are not captured by the confidence parameter.
-We encourage readers who undertake their own customized \photoz production to investigate the details of each survey that comprise our reference quality and apply their own quality cuts as suit their needs.
+If doing their own studies with custom reference samples, we encourage readers to investigate the details of each component survey that comprise the reference catalog and apply their own quality cuts as suit their needs.
 For example, if studying high-redshift galaxies, you might choose to include the multiband \photoz's, which increase the number of redshifts at $z > 2$ by a factor of~3 (Fig.~\ref{fig:redshift-by-type}).
 
 We applied conservative cuts for our fiducial analyses, specifically \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).
@@ -167,7 +167,7 @@ We then performed a random 80\%/20\% train/test split on this catalog, resulting
         \hline
         2dFGRS & s & 1.00 & 3 & \citet{colless2001} \\
                &   & 0.99 & 4 & \\
-               &   & 0.90 & 1 & \\
+               &   & 0.90$^{*}$ & 1 & \\
         2dflens & s & 1.00 & 1 & \citet{blake2016} \\
         2MRS & s & 0.95 & 1 & \citet{huchra2012} \\
         6dFGRS & s & 0.98 & 2 & \citet{jones2009} \\
@@ -176,24 +176,24 @@ We then performed a random 80\%/20\% train/test split on this catalog, resulting
         ASTRODEEP & s & 1.00 & 4165 & \citet{merlin2021} \\
                   & p & 0.97 & 8212 & \\
         ASTRODEEP-JWST & s & 1.00 & 594 & \citet{merlin2024} \\
-                       & p & 0.92 & 628 & \\
-                       &   & 0.90 & 455 & \\
+                       & p & 0.92$^{*}$ & 628 & \\
+                       &   & 0.90$^{*}$ & 455 & \\
         CANDELS & s & 1.00 & 53 & \citet{kodra2023} \\
-                & p & 0.93 & 6 & \\
+                & p & 0.93$^{*}$ & 6 & \\
         JADES & s & 0.99 & 11 & \citet{deugenio2025} \\
               &   & 0.95 & 34 & \\
-              &   & 0.90 & 24 & \\
+              &   & 0.90$^{*}$ & 24 & \\
         MOSDEF & s & 0.99 & 9 & \citet{kriek2015} \\
         NED & s & 0.95 & 847 & \citet{helou1991} \\
         OzDES & s & 0.99 & 897 & \citet{lidman2020} \\
-        PRIMUS & g & 0.92 & 3653 & \citet{cool2013} \\
-               &   & 0.85 & 1687 & \\
+        PRIMUS & g & 0.92$^{*}$ & 3653 & \citet{cool2013} \\
+               &   & 0.85$^{*}$ & 1687 & \\
         VANDELS & s & 1.00 & 196 & \citet{garilli2021} \\
         VIMOS & s & 1.00 & 499 & \citet{balestra2010} \\
                   &   & 0.95 & 43 & \\
         VUDS & s & 1.00 & 9 & \citet{tasca2017} \\
              &   & 0.95 & 9 & \\
-             &   & 0.80 & 3 & \\
+             &   & 0.80$^{*}$ & 3 & \\
         VVDS & s & 1.00 & 101 & \citet{lefevre2013} \\
              &   & 0.95 & 193 & \\
         \hline
@@ -207,7 +207,8 @@ We then performed a random 80\%/20\% train/test split on this catalog, resulting
         Component surveys of the redshift reference sample.
         Redshift type is denoted\\ s = spectroscopic, g = grism, p = multiband \photoz.
         Note for our fiducial analyses we applied conservative cuts on this catalog.
-        Specifically, \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).
+        Specifically, \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).\\
+        $^{*}$ Note: multiband photo-z redshifts and grism and spectroscopic redshifts with confidence < 0.95 were not used in any training sets employed in this note.
     }
     \label{tab:reference-sample}
 \end{table}
