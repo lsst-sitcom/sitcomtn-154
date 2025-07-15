@@ -17,9 +17,9 @@ We expect feedback from science users as they explore the data and discover issu
 \subsection{Rubin DP1}
 \label{sec:data:dp1}
 
-The Rubin Observatory’s Data Preview 1 (DP1) dataset is the first public release of Rubin observatory imaging data processed through the LSST Science Pipelines \citep{PSTN-019}, serving as a critical testbed for scientific and technical validation ahead of full LSST operations.  DP1 is based on observations from the LSST commissioning camera (LSSTComCam) and includes multi-band optical imaging in u, g, r, i, z and y filters over several square degrees of sky.  The dataset consists of processed images, source catalogs, and associated metadata, all formatted using the Rubin Data Butler system \citep{2022SPIE12189E..11J} in the same way as full LSST data products.  Although smaller in scale than future LSST datasets, DP1 offers realistic photometric measurements, object detection, and data structures, making it an invaluable resource for developing and testing algorithms for tasks such as \photoz estimation, object classification, and data quality assessment.
+The Rubin Observatory’s Data Preview 1 (DP1) dataset is the first public release of Rubin observatory imaging data processed through the LSST Science Pipelines~\citep{PSTN-019}, serving as a critical testbed for scientific and technical validation ahead of full LSST operations.  DP1 is based on observations from the LSST commissioning camera (LSSTComCam) and includes multi-band optical imaging in u, g, r, i, z and y filters over several square degrees of sky.  The dataset consists of processed images, source catalogs, and associated metadata, all formatted using the Rubin Data Butler system~\citep{2022SPIE12189E..11J} in the same way as full LSST data products.  Although smaller in scale than future LSST datasets, DP1 offers realistic photometric measurements, object detection, and data structures, making it an invaluable resource for developing and testing algorithms for tasks such as \photoz estimation, object classification, and data quality assessment.
 
-Critially, the fields selected for ComCam observation included the Extended Chandra Deep Field South (ECDFS), for which many high-quailty redshifts exist from other surveys. 
+Critically, the fields selected for ComCam observation included the Extended Chandra Deep Field South (ECDFS), for which many high-quality redshifts exist from other surveys. 
 
 
 \subsubsection{Preparation of photometric object catalogs}
@@ -27,7 +27,7 @@ Critially, the fields selected for ComCam observation included the Extended Chan
 
 The Rubin Data Management (Rubin DM) pipeline measures multiple types of object photometry, the first stage in creating a \photoz catalog was to determine which measured photometry we would use as inputs.  In this note, we generally use the 1.0 arc-second Gaussian Aperture fluxes and their associated errors, e.~g.~\texttt{u\_gaap1p0Flux} and \texttt{u\_gaap1p0FluxErr}.  These fluxes should provide good measures of consistent galaxy colors within the defined aperture, ideal for \photoz estimation, though they may not necessarily reflect the colors of the overall galaxy if there is a significant color gradient and the galaxy is larger than the 1.0 arc-second aperture.  This choice of photometric measurement may not be ideal, and investigation into the optimized set of photometric inputs will continue into the future.   The only exceptions to this are that we used \texttt{i\_psfFlux} in the initial broad data cuts, and that we briefly explored several of the other fluxes as part of the initial validation of our \photoz analysis pipelines. 
 
-Preparing object catalog \citep{10.71929/rubin/2570325} data for \photoz algorithm training and estimation included five steps:
+Preparing object catalog~\citep{10.71929/rubin/2570325} data for \photoz algorithm training and estimation included five steps:
 
 \begin{enumerate}
 \item{Applying quality cuts to the object catalog.   We developed selections for the training and test datasets (\selection{match\_xxx}), and two additional selections for full DP1 catalogs: one applicable for fields with observations in only four bands (\selection{gold\_4\_band}), the other for fields with observations in all six bands (\selection{gold}).  These selections are described below.}
@@ -40,7 +40,7 @@ Preparing object catalog \citep{10.71929/rubin/2570325} data for \photoz algorit
 The data selection criteria that we used were:
 \begin{itemize}
 \item{\selection{match\_prelim}: first version of matching to high-quality redshift catalogs in the ECDFS field,  see Sec.~\ref{sec:data:reference}.}
-\item{\selection{match\_ecdfs}: updated matching to high-quality redshift datalogs in the ECDFS field, see Sec.~\ref{sec:data:reference}.}
+\item{\selection{match\_ecdfs}: updated matching to high-quality redshift datalogs in the ECDFS field, also requiring high signal to noise photometry, with $SN_{I} > 20$, see Sec.~\ref{sec:data:reference}.}
 \item{\selection{match\_desi}: matching to DESI redshift catalogs in the \field{Rubin SV 38 7} field, see Sec.~\ref{sec:data:desi}.}
 \item{\selection{gold}: \code{Detection in 'ugrizy'  \&\& i\_psfFlux / i\_psfFluxErr > 5 \&\& ( g\_extendedness > 0.5 || r\_extendedness > 0.5)}.}
 \item{\selection{gold\_4\_band}: \code{Detection in 'griz' \&\& i\_psfFlux / i\_psfFluxErr > 5 \&\& ( g\_extendedness > 0.5 || r\_extendedness > 0.5)}.}
@@ -63,8 +63,8 @@ All of these datasets are summarized in Tab.~\ref{tab:dataset}.
  SV\_38 & \selection{gold\_4\_band} & 169,034\\
  training\_v1 & \selection{match\_prelim}  & 7,000\\
  test\_v1 & \selection{match\_prelim}  & 2,437 \\
- training\_v2 & \selection{match\_ecdfs}  & 4,803\\
- test\_v2 & \selection{match\_ecdfs}  & 1,201 \\
+ training\_v4 & \selection{match\_ecdfs}  & 6,778\\
+ test\_v4 & \selection{match\_ecdfs}  & 2,905 \\
  test\_DESI & \selection{match\_desi}  & 2,728 \\
  \hline
 \end{tabular}
@@ -131,7 +131,7 @@ The \photoz estimation algorithms in RAIL require highly accurate and precise re
     \label{fig:reference-sample}
 \end{figure*}
 
-The reference data set used to train \photoz estimation algorithms can have an outsize impact on the resulting \photoz estimates, particularly for machine learning based methods.  In many ways, the galaxies with known redshifts define the flux/color to distance relation by tracing out the mapping from empirical magnitudes to redshift that the algorithms ``learn''.  As such, the details of the construction of the reference sample is very important.  In an ideal case, we would prefer to have a ``representative'' sample of redshifts, i.~e.~a fair sampling in terms of the color and magnitude distribution for all galaxies; however, due to the practicalities of spectrographs and expensive telescope time investment needed for deep spectroscopic campaigns, we must deal with incomplete training samples, particularly for faint and high redshift objects.  We must also determine which datasets contain ``secure'' redshifts that meet some confidence threshold, and whether to include datasets from grism and many-band \photoz estimates that may contain a small fraction of incorrect redshift identifications.  We continue to refine our reference sample definition, and we may include or exclude additional samples as we investigate system performance, this note represents a current best effort, but the final selection will likely evolve.  There are also some concerns of imprinted sample variance, as the deep six-band data of DP1 is concentrated in the single ECDFS field.  Future Rubin data will cover multiple widely separated deep fields containing rich spectroscopic datasets, which will mitigate these concerns, but they may be an issue for the current DP1 estimates.
+The reference data set used to train \photoz estimation algorithms can have an outsize impact on the resulting \photoz estimates, particularly for machine learning based methods.  In many ways, the galaxies with known redshifts define the flux/color to distance relation by tracing out the mapping from empirical magnitudes to redshift that the algorithms ``learn''.  As such, the details of the construction of the reference sample is very important.  In an ideal case, we would prefer to have a ``representative'' sample of redshifts, i.~e.~a fair sampling in terms of the color and magnitude distribution for all galaxies; however, due to the practicalities of spectrographs and expensive telescope time investment needed for deep spectroscopic campaigns, we must deal with incomplete training samples, particularly for faint and high redshift objects.  We must also determine which datasets contain ``secure'' redshifts that meet some confidence threshold, and whether to include datasets from grism and many-band \photoz estimates that may contain a small fraction of incorrect redshift identifications.  We continue to refine our reference sample definition, and we may include or exclude additional samples as we investigate system performance, this note represents a current best effort, but the final selection will likely evolve.  There are also some concerns of imprinted sample variance, as the deep six-band data of DP1 is concentrated in the single ECDFS field.  Future Rubin data will cover multiple widely separated deep fields containing rich spectroscopic datasets, which will mitigate these concerns, but they may be an issue for the current DP1 estimates.
 
 
 \subsubsection{ECDFS redshift datasets}
@@ -155,8 +155,8 @@ Note redshifts from grism and \photoz surveys, however, have larger scatter and 
 If doing their own studies with custom reference samples, we encourage readers to investigate the details of each component survey that comprise the reference catalog and apply their own quality cuts as suit their needs.
 For example, if studying high-redshift galaxies, you might choose to include the multiband \photoz's, which increase the number of redshifts at $z > 2$ by a factor of~3 (Fig.~\ref{fig:redshift-by-type}).
 
-We applied conservative cuts for our fiducial analyses, specifically \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).
-We then performed a random 80\%/20\% train/test split on this catalog, resulting in a training set of 4803 redshifts and a test set of 1201 redshifts.
+We applied conservative cuts for our fiducial analyses, specifically \code{type == ''s''}, \code{confidence >= 0.90} SNR $>= 20$ in the $i$ band (using \code{gaap1p0} fluxes), and requiring measured Gaussian aperture (\code{gaap\_1p0}) fluxes in all bands.  
+We then performed a random 70\%/30\% train/test split on this catalog, resulting in a training set of  6,778 redshifts and a test set of 2,905 redshifts.
 
 \begin{table}[!p]
     \centering
@@ -207,8 +207,8 @@ We then performed a random 80\%/20\% train/test split on this catalog, resulting
         Component surveys of the redshift reference sample.
         Redshift type is denoted\\ s = spectroscopic, g = grism, p = multiband \photoz.
         Note for our fiducial analyses we applied conservative cuts on this catalog.
-        Specifically, \code{type == ''s''}, \code{confidence >= 0.95}, SNR $>= 10$ in the $i$ band (using \code{gaap1p0} fluxes).\\
-        $^{*}$ Note: multiband photo-z redshifts and grism and spectroscopic redshifts with confidence < 0.95 were not used in any training sets employed in this note.
+        Specifically, \code{type == ''s''}, \code{confidence >= 0.90}, SNR $>= 20$ in the $i$ band (using \code{gaap1p0} fluxes).\\
+        $^{*}$ Note: multiband photo-z redshifts and grism and spectroscopic redshifts with confidence < 0.90 were not used in any training sets employed in this note.
     }
     \label{tab:reference-sample}
 \end{table}
@@ -225,11 +225,10 @@ We then performed a random 80\%/20\% train/test split on this catalog, resulting
 The \selection{match\_prelim} selection used in the \dataset{train\_v1} and \dataset{test\_v1} 
 included all spectroscopic and grism galaxies in the ``match\_ecfds'' catalog, without applying 
 any confidence cut, and only required SNR $>= 5$ in the $i$ band (using \code{psf} fluxes).   
-This selection also dropped all galaxies with NaN magnitude in any of the six bands.
+This selection also dropped all galaxies with unmeasured magnitude in any of the six bands.
 We randomly selected 7,000 objects for the \dataset{train\_v1} and assigned the remaining 2,438 to the 
-\dataset{test\_v1}  dataset. Although we used these datasets extensively in V1 of this technote, 
-we intend to update the note to use the \dataset{train\_v2} and \dataset{test\_v2} as soon as possible, 
-ideally in the first week of July, 2025.
+\dataset{test\_v1}  dataset.  Although we used these datasets extensively in V1 of this technote, 
+we have updated the note to use the \dataset{train\_v4} and \dataset{test\_v4} datasets.
 
 
 \subsubsection{DESI Data Release 1 spectroscopic redshift dataset}
@@ -237,7 +236,7 @@ ideally in the first week of July, 2025.
 
 We also use data from the DESI Data Release \citep{desi-dr1} to act as an independent validation data set as it overlaps the \field{Rubin SV 38-7} (\field{SV\_38}) field.
 The observations of this field are centered on the Abell 360 galaxy cluster which is located at $z=0.22$~\citep{A360z}.
-We cross-matched the DESI Bright Galaxy Sample (BGS) \citep{BGS}, Emission Line Galaxy (ELG) \citep{ELG}, and Luminous Red Galaxy (LRG) \citep{LRG} samples against the DP1 catalog using a radius of 0.5'' producing 2728  matches with 398 from the BGS sample, 1421 from ELG, and 909 from LRG.
+We cross-matched the DESI Bright Galaxy Sample (BGS) \citep{BGS}, Emission Line Galaxy (ELG) \citep{ELG}, and Luminous Red Galaxy (LRG) \citep{LRG} samples against the DP1 catalog using a radius of 0.5'' producing 2728 matches with 398 from the BGS sample, 1421 from ELG, and 909 from LRG.
 The area of overlap and the three subsamples are shown in Fig.~\ref{fig:desi-overlap}.
 This spans a redshift range of 0 to 1.6 and \textit{i}-mag of 14 to 23.9 as shown in Fig.~\ref{fig:desi-subsample-hist}; the bump at $z\approx0.25$ can be attributed to the cluster at the center of the field.
 
@@ -278,7 +277,7 @@ As part of the Rubin \photoz roadmap process, \code{KNN} and \code{BPZ} were cho
  \hline
  \multicolumn{3}{c}{Project Supported Testing} \\ 
   \code{BPZ} & \href{https://github.com/LSSTDESC/rail_bpz}{\code{rail-bpz}} & \citet{Benitez:2000}\\
- \code{KNN} & \href{https://github.com/LSSTDESC/rail_sklearn}{\code{rail-sklearn}} & RAIL Paper\\
+ \code{KNN} & \href{https://github.com/LSSTDESC/rail_sklearn}{\code{rail-sklearn}} & \citet{RAIL} \\
  \multicolumn{3}{c}{Community Supported} \\   
  \code{CMNN} & \href{https://github.com/LSSTDESC/rail_cmnn}{\code{rail-cmnn}} & \citet{Graham:2018}\\
  \code{DNF} & \href{https://github.com/LSSTDESC/rail_dnf}{\code{rail-dnf}} & \citet{2016MNRAS.459.3078D}\\
@@ -325,7 +324,7 @@ Additionally, \code{rail\_projects} facilitates the management of large datasets
 
 We explored dozens of different configuration settings, covering analysis choices such as which flux measurements to use, the machine learning hyper-parameters, which sets of SED templates to use, among others.   The \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1.yaml}{dp1/dp1.yaml} configuration file (see Sec.~\ref{sec:products:configuration}) captures the set of configurations that we tested and labels each set into an analysis ``flavor'' to facilitate bookkeeping. 
 
-After examining the performance of the algorithms under different configurations, we settled on a set of optimized parameters for each algorithm and on the \code{gaap\_1p0} fluxes to produce the best-effort catalogs for DP1.   These optimized configurations parameters are captured in the \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1.yaml}{dp1/dp1\_v1.yaml} configuration file.
+After examining the performance of the algorithms under different configurations, we settled on a set of optimized parameters for each algorithm and on the \code{gaap\_1p0} fluxes to produce the best-effort catalogs for DP1.   These optimized configurations parameters are captured in the \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1_v4.yaml}{dp1/dp1\_v4.yaml} configuration file.
 
 
 \subsection{Production of redshift catalogs}
@@ -339,7 +338,7 @@ We produced \photoz catalogs in two different software frameworks, both to test 
 
 We used \code{rail\_project} to run RAIL’s  \href{https://github.com/LSSTDESC/rail_pipelines/blob/main/src/rail/pipelines/estimation/estimate_all.py}{EstimatePipeline}, to perform the photometric redshift estimation on the unlabeled data sets for all of the algorithms.
 
-Specifically, we used \code{rail\_project} to run all of the configuration flavors defined in the \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1.yaml}{dp1/dp1.yaml} and \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1.yaml}{dp1/dp1\_v1.yaml} configuration files.
+Specifically, we used \code{rail\_project} to run all of the configuration flavors defined in the \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1.yaml}{dp1/dp1.yaml} and \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1_v4.yaml}{dp1/dp1\_v4.yaml} configuration files.
 The resulting data products are internally available as files at the USDF and NERSC as described in App.~\ref{sec:distribution:files}.   It is expected some of the products will be distributed via other methods in the near future (see App.~\ref{sec:distribution:linea} and App.~\ref{sec:distribution:lsdb}).
 
 
@@ -351,7 +350,7 @@ to create \photoz catalogs in the Rubin data management framework.
 
 Specifically, we imported trained models produced in the \code{rail\_project} into the DP1 data Butler and produced \photoz estimates for every object in DP1 for each algorithm.
 
-We did this for the \texttt{baseline} analysis flavor, (consisting of ``out-of-the-box'' algorithms, with all settings at default values) and the optimized 6 band (\texttt{dp1\_optimze}) flavor defined in \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1.yaml}{dp1/dp1\_v1.yaml}.
+We did this for the \texttt{baseline} analysis flavor, (consisting of ``out-of-the-box'' algorithms, with all settings at default values) and the optimized 6 band (\texttt{dp1\_optimize}) flavor defined in \href{https://github.com/LSSTDESC/rail_project_config/blob/main/dp1/dp1_v1.yaml}{dp1/dp1\_v1.yaml}.
 The resulting data products are internally available via data Butlers at USDF and NERSC as described in App.~\ref{sec:distribution:butler}.   As with the \code{rail\_projects} created catalogs, it is expected some of the products will be distributed via other methods in the near future (see App.~\ref{sec:distribution:linea} and App.~\ref{sec:distribution:lsdb}).
 
 
@@ -363,7 +362,7 @@ We evaluated all the algorithms listed in Tab.~\ref{tab:alg} for both scientific
 \subsection{Redshift estimator performance}
 \label{sec:performance:pz}
 
-We primarily evaluated the performance using the ``test\_v1'' catalog which consist of 2,437 galaxies randomly drawn from the cross-match between the DP1 object catalog in ECDFS with the reference redshifts described in Sec.~\ref{sec:data:reference}.  Additionally, we cross matched the DP1 object catalog in the \field{SV\_38} field with the DESI DR1 BGS, LRG and ELG galaxies as a secondary validation set (``test\_DESI''). 
+We primarily evaluated the performance using the ``test\_v4'' catalog which consist of 2,905 galaxies randomly drawn from the cross-match between the DP1 object catalog in ECDFS with the reference redshifts described in Sec.~\ref{sec:data:reference}.  Additionally, we cross matched the DP1 object catalog in the \field{SV\_38} field with the DESI DR1 BGS, LRG and ELG galaxies as a secondary validation set (``test\_DESI''). 
 
 Specifically, we ran the \href{https://github.com/LSSTDESC/rail_pipelines/blob/main/src/rail/pipelines/estimation/pz_all.py}{PzPipeline}
 (Inform $\rightarrow$ Estimate $\rightarrow$ Evaluate) to train models for per-object $p(z)$ estimation on the training data set, use those models to obtain \photoz estimates for the test data set, and then evaluate the performance of the photometric point-estimate of the redshift against the spectroscopic estimates.
@@ -406,14 +405,14 @@ are shown in legend. We summarized these statistics in Table~\ref{tab:photoz_met
 \hline
 \textbf{Algorithm} & \textbf{Bias} & \textbf{$\sigma$} & \textbf{3$\sigma$ Outlier Rate} & \textbf{$\Delta z>0.2$ Outlier Rate} \\
 \hline
-FlexZBoost & 0.000 (0.000) & 0.0246 (0.0274) & 0.215 (0.221) & 0.113 (0.124) \\
-kNN        & -0.002 (-0.000) & 0.0301 (0.0285) & 0.205 (0.245) & 0.128(0.147) \\
-CMNN       & 0.000 (-0.002) & 0.0369 (0.0729) & 0.227 (0.212) & 0.160 (0.226) \\
-DNF        & -0.002 (-0.001) & 0.041 (0.0327) & 0.189 (0.215) & 0.138 (0.121) \\
-TPZ        & -0.001 (-0.002) & 0.050 (0.0524) & 0.154 (0.156) & 0.117 (0.127) \\
-GPz        & 0.032 (0.018) & 0.166 (0.106) & 0.056 (0.110) & 0.260 (0.198) \\
-BPZ        & -0.018 (-0.015) & 0.0425 (0.060) & 0.198 (0.197) & 0.146 (0.186) \\
-LePhare    & -0.012 (-0.015) & 0.0344 (0.0699) & 0.207 (0.175) & 0.139 (0.185) \\
+FlexZBoost & 0.000 (0.000) & 0.026 (0.028) & 0.192 (0.214) & 0.093 (0.105) \\
+kNN        & -0.003 (-0.000) & 0.035 (0.031) & 0.194 (0.220) & 0.119 (0.125) \\
+CMNN       & 0.000 (-0.002) & 0.039 (0.073) & 0.172 (0.171) & 0.121 (0.186) \\
+DNF        & -0.003 (-0.000) & 0.048 (0.034) & 0.143 (0.189) & 0.109 (0.107) \\
+TPZ        & -0.001 (-0.003) & 0.054 (0.056) & 0.126 (0.133) & 0.104 (0.111) \\
+GPz        & 0.003 (0.002) & 0.052 (0.060) & 0.181 (0.159) & 0.147 (0.144) \\
+BPZ        & -0.018 (-0.016) & 0.039 (0.055) & 0.221 (0.223) & 0.168 (0.202) \\
+LePhare    & -0.014 (-0.015) & 0.034 (0.066) & 0.208 (0.178) & 0.147 (0.175) \\
 \hline
 \end{tabular}
 \label{tab:photoz_metrics}
@@ -467,7 +466,7 @@ We cross-matched our \photoz estimates with the DESI DR1 LSS galaxies (BGS, LRG,
 \subsection{Technical performance}
 \label{sec:performance:technical}
 
-Tab.~\ref{tab:tech_perf} shows compute times and file sizes for both the training and estimation phases of the analysis.    The metrics from the training phase were taken from running the algorithm's ``Inform'' stages on USDF on the ``training\_v1'' dataset of ~7,000 objects.    The metrics from the estimation phase were taken from algorithm's ``Inform'' stages on USDF on the ``test\_v1'' datasets of ~2,437 objects.
+Tab.~\ref{tab:tech_perf} shows compute times and file sizes for both the training and estimation phases of the analysis.    The metrics from the training phase were taken from running the algorithm's ``Inform'' stages on \href{https://docs.nersc.gov/systems/perlmutter/architecture}{Perlmutter at NERSC} on the ``training\_v4'' dataset of 6,778 objects.    The metrics from the estimation phase were taken from algorithm's ``Inform'' stages on USDF on the ``test\_v4'' datasets of 2,905 objects.
 
 \begin{table*}
 \centering
@@ -490,7 +489,7 @@ Tab.~\ref{tab:tech_perf} shows compute times and file sizes for both the trainin
  \hline
 \end{tabular}
 \caption{
-  Algorithm compute times and files sizes.   The algorithms were trained on 7000 objects and evaluated on 2,437 objects.  The variations shown reflect the differences in processing times with different sets of hyper-parameters.
+  Algorithm compute times and files sizes.   The algorithms were trained on 6,778 objects and evaluated on 2,905 objects.  The variations shown reflect the differences in processing times with different sets of hyper-parameters.
 }
 \label{tab:tech_perf}
 \end{table*}
@@ -521,7 +520,7 @@ The \photoz estimates described in this note were done on a best-effort basis by
 \begin{figure*}
     \centering
     \includegraphics[width=0.45\linewidth]{figures/tpz_scatter_faint.pdf}
-    \caption{Point-estimates versus spectroscopic redshifts for all galaxies in the reserved test set with $m_{i} > 23.5$, showing the degradation in estimation performance for faint objects.}
+    \caption{Point-estimates versus spectroscopic redshifts for all galaxies in the reserved test set with $m_{i} > 24.0$, showing the degradation in estimation performance for faint objects.}
     \label{fig:faint_objects}
 \end{figure*}
 
@@ -567,6 +566,7 @@ Additional Rubin Observatory funding comes from private donations, grants to uni
 %  LocalWords:  deugenio2025 helou1991 garilli2021 lefevre2013 textit
 %  LocalWords:  approx0.25 rail-bpz rail-sklearn rail-cmnn rail-dnf
 %  LocalWords:  FlexZBoost GPz Almosallam:2016 rail-lephare rail-tpz
-%  LocalWords:  Lephare _bpz Ilbert:09 _bpz _bpz _pz _optimze knn bpz
+%  LocalWords:  Lephare _bpz Ilbert:09 _bpz knn bpz
 %  LocalWords:  rightarrow rightarrow knn bpz textbf textbf textbf
-%  LocalWords:  Sersic
+%  LocalWords:  Sersic _ecdfs _psfFlux _psfFluxErr 2dflens _ecfds psf
+%  LocalWords:  _pz
