@@ -277,7 +277,7 @@ As part of the Rubin \photoz roadmap process, \code{KNN} and \code{BPZ} were cho
  \hline
  \multicolumn{3}{c}{Project Supported Testing} \\ 
   \code{BPZ} & \href{https://github.com/LSSTDESC/rail_bpz}{\code{rail-bpz}} & \citet{Benitez:2000}\\
- \code{KNN} & \href{https://github.com/LSSTDESC/rail_sklearn}{\code{rail-sklearn}} & RAIL Paper\\
+ \code{KNN} & \href{https://github.com/LSSTDESC/rail_sklearn}{\code{rail-sklearn}} & \citet{RAIL} \\
  \multicolumn{3}{c}{Community Supported} \\   
  \code{CMNN} & \href{https://github.com/LSSTDESC/rail_cmnn}{\code{rail-cmnn}} & \citet{Graham:2018}\\
  \code{DNF} & \href{https://github.com/LSSTDESC/rail_dnf}{\code{rail-dnf}} & \citet{2016MNRAS.459.3078D}\\
@@ -405,14 +405,14 @@ are shown in legend. We summarized these statistics in Table~\ref{tab:photoz_met
 \hline
 \textbf{Algorithm} & \textbf{Bias} & \textbf{$\sigma$} & \textbf{3$\sigma$ Outlier Rate} & \textbf{$\Delta z>0.2$ Outlier Rate} \\
 \hline
-FlexZBoost & 0.000 (0.000) & 0.0246 (0.0274) & 0.215 (0.221) & 0.113 (0.124) \\
-kNN        & -0.002 (-0.000) & 0.0301 (0.0285) & 0.205 (0.245) & 0.128(0.147) \\
-CMNN       & 0.000 (-0.002) & 0.0369 (0.0729) & 0.227 (0.212) & 0.160 (0.226) \\
-DNF        & -0.002 (-0.001) & 0.041 (0.0327) & 0.189 (0.215) & 0.138 (0.121) \\
-TPZ        & -0.001 (-0.002) & 0.050 (0.0524) & 0.154 (0.156) & 0.117 (0.127) \\
-GPz        & 0.032 (0.018) & 0.166 (0.106) & 0.056 (0.110) & 0.260 (0.198) \\
-BPZ        & -0.018 (-0.015) & 0.0425 (0.060) & 0.198 (0.197) & 0.146 (0.186) \\
-LePhare    & -0.012 (-0.015) & 0.0344 (0.0699) & 0.207 (0.175) & 0.139 (0.185) \\
+FlexZBoost & 0.000 (0.000) & 0.026 (0.028) & 0.192 (0.214) & 0.093 (0.105) \\
+kNN        & -0.003 (-0.000) & 0.035 (0.031) & 0.194 (0.220) & 0.119 (0.125) \\
+CMNN       & 0.000 (-0.002) & 0.039 (0.073) & 0.172 (0.171) & 0.121 (0.186) \\
+DNF        & -0.003 (-0.000) & 0.048 (0.034) & 0.143 (0.189) & 0.109 (0.107) \\
+TPZ        & -0.001 (-0.003) & 0.054 (0.056) & 0.126 (0.133) & 0.104 (0.111) \\
+GPz        & 0.003 (0.002) & 0.052 (0.060) & 0.181 (0.159) & 0.147 (0.144) \\
+BPZ        & -0.018 (-0.016) & 0.039 (0.055) & 0.221 (0.223) & 0.168 (0.202) \\
+LePhare    & -0.014 (-0.015) & 0.034 (0.066) & 0.208 (0.178) & 0.147 (0.175) \\
 \hline
 \end{tabular}
 \label{tab:photoz_metrics}
@@ -466,7 +466,7 @@ We cross-matched our \photoz estimates with the DESI DR1 LSS galaxies (BGS, LRG,
 \subsection{Technical performance}
 \label{sec:performance:technical}
 
-Tab.~\ref{tab:tech_perf} shows compute times and file sizes for both the training and estimation phases of the analysis.    The metrics from the training phase were taken from running the algorithm's ``Inform'' stages on USDF on the ``training\_v4'' dataset of 6,778 objects.    The metrics from the estimation phase were taken from algorithm's ``Inform'' stages on USDF on the ``test\_v4'' datasets of 2,905 objects.
+Tab.~\ref{tab:tech_perf} shows compute times and file sizes for both the training and estimation phases of the analysis.    The metrics from the training phase were taken from running the algorithm's ``Inform'' stages on \href{https://docs.nersc.gov/systems/perlmutter/architecture}{Perlmutter at NERSC} on the ``training\_v4'' dataset of 6,778 objects.    The metrics from the estimation phase were taken from algorithm's ``Inform'' stages on USDF on the ``test\_v4'' datasets of 2,905 objects.
 
 \begin{table*}
 \centering
